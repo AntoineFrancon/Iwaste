@@ -2,8 +2,8 @@
 
 try
             {
-                $bdd = new PDO('mysql:host=localhost;dbname=test;charset=utf8', 'root', 'root'); //en local
-                //$bdd = new PDO('mysql:host=localhost;dbname=scs;charset=utf8', 'scs', '6hflparKWRNo');
+                //$bdd = new PDO('mysql:host=localhost;dbname=test;charset=utf8', 'root', 'root'); //en local
+                $bdd = new PDO('mysql:host=localhost;dbname=scs;charset=utf8', 'scs', '6hflparKWRNo');
             }
             catch(Exception $e)
             {
@@ -31,6 +31,26 @@ $infoPoubelle->closeCursor();
         var vitesse_remplissage = [];
 
             <?php
+
+                    if ($_POST['num_poubelle']==1) {
+                        $historiquePoubelle = $bdd->prepare('SELECT j.remplissage AS remplissage, DAY(j.date_remp) AS jour, MONTH(j.date_remp) AS mois, YEAR(j.date_remp) AS annee, HOUR(j.date_remp) AS heure, MINUTE(j.date_remp) AS minute, SECOND(j.date_remp) AS seconde
+
+                                                        FROM historique j
+
+                                                        INNER JOIN poubelle p
+
+                                                        ON j.num_poubelle = p.id
+
+                                                        WHERE p.id = :id
+
+                                                        ORDER BY j.date_remp DESC
+
+                                                        LIMIT 0, 10
+
+                                                        ');
+
+                    $historiquePoubelle->execute(array('id' => $_POST['num_poubelle'])); } 
+                    else {
                     $historiquePoubelle = $bdd->prepare('SELECT j.remplissage AS remplissage, DAY(j.date_remp) AS jour, MONTH(j.date_remp) AS mois, YEAR(j.date_remp) AS annee, HOUR(j.date_remp) AS heure, MINUTE(j.date_remp) AS minute, SECOND(j.date_remp) AS seconde
 
                                                         FROM historique j
@@ -48,6 +68,7 @@ $infoPoubelle->closeCursor();
                                                         ');
 
                     $historiquePoubelle->execute(array('id' => $_POST['num_poubelle']));
+                }
 
                     while ($historique = $historiquePoubelle->fetch())
                                     
