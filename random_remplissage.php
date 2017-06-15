@@ -37,16 +37,20 @@ $reponse = $bdd->query('SELECT id, remplissage, date_remp FROM poubelle');
                 $opts = array(
                 'http'=>array(
                 'method'=>"GET",
-                'header'=>"apikey: 3uCDfWUJL8ALQm1np72o7/QPP6ktt/qbTzSjQSbNcq/ZrnSTQWsrncaN+DWnweVG5Ul6MQ5h+z1ifqSS8J+poA=="
+                'header'=>"apikey: 3Ivi5tcaf/oBJZ7T77031C3DnYp62UdEvU2UOauR7JRWu+zYKgtDBXOB3pmnwX0ph8IpxQuXAaH4kiCJJubAAg=="
                   )
                 );
 
                 $context = stream_context_create($opts);
 
                 // Open the file using the HTTP headers set above
-                $file = file_get_contents("https://api.objenious.com/v1/devices/562949953422033/messages", false, $context);
+                $file = file_get_contents("https://api.objenious.com/v1/devices/562949953422026/messages", false, $context);
                 $obj = json_decode($file, true);
-                $new_remplissage = $obj['messages'][1]['payload'][0]['data']['temperature'];
+                $x = 0;
+                while ( ($obj['messages'][$x]['type'] != 'uplink') && ($x<=3) ) {
+                    $x = $x +1;
+                }
+                $new_remplissage = $obj['messages'][$x]['payload'][0]['data']['temperature'];
                 if (empty($new_remplissage)) {
                         $new_remplissage=-1;
                     } 
