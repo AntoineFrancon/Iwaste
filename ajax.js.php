@@ -44,7 +44,16 @@ $(document).ready(function() {
           // Open the file using the HTTP headers set above
           $file = file_get_contents("https://api.objenious.com/v1/devices/562949953422033/messages", false, $context);
           $obj = json_decode($file, true);
-          echo 'var remplissagePoubelle1 = '.$obj['messages'][1]['payload'][0]['data']['temperature'].';';
+          $x = 0;
+                while ( ($obj['messages'][$x]['type'] != 'uplink') && ($x<=3) ) {
+                    $x = $x +1;
+                }
+                $new_remplissage = $obj['messages'][$x]['payload'][0]['data']['temperature'];
+                if (empty($new_remplissage)) {
+                         echo 'var remplissagePoubelle1 = "offline";';
+                    } else {
+          echo 'var remplissagePoubelle1 = '.$new_remplissage.';';}
+
 
           ?>
 
